@@ -6,7 +6,8 @@ from uuid import UUID
 
 from app.repositories.paper_repo import PaperRepository
 from app.repositories.gap_repo import GapRepository
-from app.schemas.gap_analysis import GapAnalysisRequest, GapAnalysisSummaryResponse, GapResponse, ResearchGap
+from app.schemas.gap_analysis import GapAnalysisRequest, GapAnalysisSummaryResponse, GapResponse
+from app.models.gap_analysis import ResearchGap
 from app.core.config import settings
 
 class GapAnalysisService:
