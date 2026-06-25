@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # Database Service: PostgreSQL with pgvector extension enabled
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: researchos-db
+    restart: always
+    environment:
+      POSTGRES_USER: researcher
+      POSTGRES_PASSWORD: secure_dev_pass
+      POSTGRES_DB: researchos
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U researcher -d researchos"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Unified Web Application Service (Express + FastAPI Multi-process Orchestrator)
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: researchos-web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - SECRET_KEY=super_secure_development_secret_key_change_in_production_12345678
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      # Database variables connecting to the 'db' service container
+      - POSTGRES_SERVER=db
+      - POSTGRES_USER=researcher
+      - POSTGRES_PASSWORD=secure_dev_pass
+      - POSTGRES_DB=researchos
+      - POSTGRES_PORT=5432
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    driver: local
