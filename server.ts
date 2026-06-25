@@ -8,7 +8,7 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 const getPythonCommand = (): string => {
   if (process.platform === "win32") {
