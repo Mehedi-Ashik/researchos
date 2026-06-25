@@ -39,3 +39,4 @@ class GapAnalysisSummaryResponse(BaseModel):
     novelties: List[GapResponse]
     opportunities: List[GapResponse]
     synthesized_summary: str = Field(..., description="Project-wide executive summary summarizing the research gaps and pathways.")
+    ResearchGap = GapResponse
