@@ -2,20 +2,16 @@ import express from "express";
 import { createServer } from "http";
 import { spawn } from "child_process";
 import path from "path";
-import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 const pythonProcess = spawn("python", ["-m", "uvicorn", "app.main:app", "--host", "127.0.0.1", "--port", "8000"], {
-  cwd: path.join(__dirname, "fastapi-backend"),
+  cwd: path.join(process.cwd(), "fastapi-backend"),
   stdio: "inherit",
   shell: true,
 });
@@ -34,9 +30,9 @@ app.use("/api/v1", (req: any, res: any, next: any) => {
   apiProxy(req, res, next);
 });
 
-const distPath = path.join(__dirname, "dist");
+const distPath = path.join(process.cwd(), "dist");
 app.use(express.static(distPath));
-app.get("*", (_req, res) => {
+app.get("*", (_req: any, res: any) => {
   res.sendFile(path.join(distPath, "index.html"));
 });
 
